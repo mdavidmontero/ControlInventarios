@@ -8,6 +8,8 @@ import { SpinnerLoader } from "../components/molecules/SpinnerLoader";
 import { ErrorMolecula } from "../components/molecules/ErrorMolecula";
 import { useUsuarioStore } from "../store/UsuariosStore";
 import { useEmpresaStore } from "../store/EmpresaStore";
+import { Configuracion } from "../pages/Configuracion";
+import { Marca } from "../pages/Marca";
 
 export const MyRoutes = () => {
   const { user } = UserAuth();
@@ -40,6 +42,8 @@ export const MyRoutes = () => {
         <Route path="/" element={<Home />} />
       </Route>
       <Route path="/login" element={<Login />} />
+      <Route path="/configurar" element={<Configuracion />} />
+      <Route path="/configurar/marca" element={<Marca />} />
     </Routes>
   );
 };
