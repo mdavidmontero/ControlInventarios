@@ -11,6 +11,7 @@ import { useEmpresaStore } from "../store/EmpresaStore";
 import { Configuracion } from "../pages/Configuracion";
 import { Marca } from "../pages/Marca";
 import { Categorias } from "../pages/Categorias";
+import { Productos } from "../pages/Productos";
 
 export const MyRoutes = () => {
   const { user } = UserAuth();
@@ -46,6 +47,7 @@ export const MyRoutes = () => {
       <Route path="/configurar" element={<Configuracion />} />
       <Route path="/configurar/marca" element={<Marca />} />
       <Route path="/configurar/categorias" element={<Categorias />} />
+      <Route path="/configurar/productos" element={<Productos />} />
     </Routes>
   );
 };
