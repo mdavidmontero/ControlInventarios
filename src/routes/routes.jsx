@@ -10,6 +10,7 @@ import { useUsuarioStore } from "../store/UsuariosStore";
 import { useEmpresaStore } from "../store/EmpresaStore";
 import { Configuracion } from "../pages/Configuracion";
 import { Marca } from "../pages/Marca";
+import { Categorias } from "../pages/Categorias";
 
 export const MyRoutes = () => {
   const { user } = UserAuth();
@@ -44,6 +45,7 @@ export const MyRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/configurar" element={<Configuracion />} />
       <Route path="/configurar/marca" element={<Marca />} />
+      <Route path="/configurar/categorias" element={<Categorias />} />
     </Routes>
   );
 };

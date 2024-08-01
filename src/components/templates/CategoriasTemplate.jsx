@@ -1,16 +1,16 @@
 import styled from "styled-components";
-import { Header } from "../organisms/Header";
-import { useMarcaStore } from "../../store/MarcaStore";
-import { useState } from "react";
-import { ContentFiltro } from "../atoms/ContentFiltro";
-import { Title } from "../atoms/Title";
 import { Btnfiltro } from "../molecules/Btnfiltro";
-import { v } from "../../styles/variables";
 import { Buscador } from "../organisms/Buscador";
-import { TablaMarca } from "../organisms/tablas/TablaMarca";
-import { RegistrarMarca } from "../organisms/forms/RegistrarMarca";
+import { ContentFiltro } from "../atoms/ContentFiltro";
+import { Header } from "../organisms/Header";
+import { RegistrarCategorias } from "../organisms/forms/RegistrarCategorias";
+import { TablaCategorias } from "../organisms/tablas/TablaCategorias";
+import { Title } from "../atoms/Title";
+import { useCategoriasStore } from "../../store/CategoriasStore";
+import { v } from "../../styles/variables";
 
-export function MarcaTemplate({ data }) {
+import { useState } from "react";
+export function CategoriasTemplate({ data }) {
   const [state, setState] = useState(false);
   const [dataSelect, setdataSelect] = useState([]);
   const [accion, setAccion] = useState("");
@@ -20,11 +20,11 @@ export function MarcaTemplate({ data }) {
     setAccion("Nuevo");
     setdataSelect([]);
   };
-  const { setBuscador } = useMarcaStore();
+  const { setBuscador } = useCategoriasStore();
   return (
     <Container>
       {openRegistro && (
-        <RegistrarMarca
+        <RegistrarCategorias
           dataSelect={dataSelect}
           accion={accion}
           onClose={() => SetopenRegistro(!openRegistro)}
@@ -38,7 +38,7 @@ export function MarcaTemplate({ data }) {
       </header>
       <section className="area1">
         <ContentFiltro>
-          <Title>Marcas</Title>
+          <Title>Categorias</Title>
           <Btnfiltro
             funcion={nuevoRegistro}
             bgcolor="#f6f3f3"
@@ -51,7 +51,7 @@ export function MarcaTemplate({ data }) {
         <Buscador setBuscador={setBuscador} />
       </section>
       <section className="main">
-        <TablaMarca
+        <TablaCategorias
           data={data}
           SetopenRegistro={SetopenRegistro}
           setdataSelect={setdataSelect}
