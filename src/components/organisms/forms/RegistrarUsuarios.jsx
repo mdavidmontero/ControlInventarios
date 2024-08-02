@@ -18,6 +18,7 @@ import { useForm } from "react-hook-form";
 import { useEmpresaStore } from "../../../store/EmpresaStore";
 import { TipoDocData, TipouserData } from "../../../utils/dataEstatica";
 import { ListaModulos } from "../ListaModulos";
+import { useUsuarioStore } from "../../../store/UsuariosStore";
 export function RegistrarUsuarios({ onClose, dataSelect, accion }) {
   const [checkboxs, setCheckboxs] = useState([]);
   const [tipodoc, setTipodoc] = useState({ icono: "", descripcion: "otros" });
@@ -25,11 +26,9 @@ export function RegistrarUsuarios({ onClose, dataSelect, accion }) {
     icono: "",
     descripcion: "empleado",
   });
-  const { insertarproductos, editarproductos } = useProductosStore();
+  const { insertarusuarios, editarusuarios } = useUsuarioStore();
   const { dataempresa } = useEmpresaStore();
-  const { marcaItemSelect, datamarca, selectMarca } = useMarcaStore();
-  const { categoriasItemSelect, datacategorias, selectcategorias } =
-    useCategoriasStore();
+
   const [stateTipodoc, setStateTipodoc] = useState(false);
   const [stateTipouser, setStateTipouser] = useState(false);
   const [openRegistroMarca, SetopenRegistroMarca] = useState(false);
@@ -52,43 +51,38 @@ export function RegistrarUsuarios({ onClose, dataSelect, accion }) {
     if (accion === "Editar") {
       const p = {
         id: dataSelect.id,
-        descripcion: ConvertirCapitalize(data.descripcion),
-        idmarca: marcaItemSelect.id,
-        stock: parseFloat(data.stock),
-        stock_minimo: parseFloat(data.codigointerno),
-        codigobarras: parseFloat(data.codigobarras),
-        codigointerno: data.codigointerno,
-        precioventa: parseFloat(data.precioventa),
-        preciocompra: parseFloat(data.preciocompra),
-        id_categoria: categoriasItemSelect.id,
-        id_empresa: dataempresa.id,
+        nombres: data.nombres,
+        nro_doc: data.nrodoc,
+        telefono: data.telefono,
+        direccion: data.direccion,
+        tipouser: tipouser.descripcion,
+        tipodoc: tipodoc.descripcion,
       };
-      await editarproductos(p);
+      await editarusuarios(p, checkboxs, dataempresa.id);
       onClose();
     } else {
       const p = {
-        _descripcion: ConvertirCapitalize(data.descripcion),
-        _idmarca: marcaItemSelect.id,
-        _stock: parseFloat(data.stock),
-        _stock_minimo: parseFloat(data.codigointerno),
-        _codigobarras: parseFloat(data.codigobarras),
-        _codigointerno: data.codigointerno,
-        _precioventa: parseFloat(data.precioventa),
-        _preciocompra: parseFloat(data.preciocompra),
-        _id_categoria: categoriasItemSelect.id,
-        _id_empresa: dataempresa.id,
+        nombres: data.nombres,
+        correo: data.correo,
+        nrodoc: data.nrodoc,
+        telefono: data.telefono,
+        direccion: data.direccion,
+        tipouser: tipouser.descripcion,
+        tipodoc: tipodoc.descripcion,
+        id_empresa: dataempresa.id,
       };
-      await insertarproductos(p);
+      const parametrosAuth = {
+        correo: data.correo,
+        pass: data.pass,
+      };
+      await insertarusuarios(parametrosAuth, p, checkboxs);
       onClose();
     }
   }
   useEffect(() => {
     if (accion === "Editar") {
-      selectMarca({ id: dataSelect.idmarca, descripcion: dataSelect.marca });
-      selectcategorias({
-        id: dataSelect.id_categoria,
-        descripcion: dataSelect.categoria,
-      });
+      setTipodoc({ icono: "", descripcion: dataSelect.tipodoc });
+      setTipouser({ icono: "", descripcion: dataSelect.tipouser });
     }
   }, []);
   return (
@@ -98,8 +92,8 @@ export function RegistrarUsuarios({ onClose, dataSelect, accion }) {
           <section>
             <h1>
               {accion == "Editar"
-                ? "Editar Usuarios"
-                : "Registrar Nuevo Usuario"}
+                ? "Editar usuarios"
+                : "Registrar nuevo usuario"}
             </h1>
           </section>
 
@@ -110,36 +104,52 @@ export function RegistrarUsuarios({ onClose, dataSelect, accion }) {
 
         <form className="formulario" onSubmit={handleSubmit(insertar)}>
           <section className="seccion1">
-            <article>
-              <InputText icono={<v.icononombre />}>
-                <input
-                  className="form__field"
-                  defaultValue={dataSelect.correo}
-                  type="text"
-                  placeholder=""
-                  {...register("correo", {
-                    required: true,
-                  })}
-                />
-                <label className="form__label">correo</label>
-                {errors.correo?.type === "required" && <p>Campo requerido</p>}
-              </InputText>
-            </article>
-            <article>
-              <InputText icono={<v.icononombre />}>
-                <input
-                  className="form__field"
-                  defaultValue={dataSelect.pass}
-                  type="text"
-                  placeholder=""
-                  {...register("pass", {
-                    required: true,
-                  })}
-                />
-                <label className="form__label">Password</label>
-                {errors.pass?.type === "required" && <p>Campo requerido</p>}
-              </InputText>
-            </article>
+            {accion != "Editar" ? (
+              <article>
+                <InputText icono={<v.icononombre />}>
+                  <input
+                    className={
+                      accion === "Editar"
+                        ? "form__field disabled"
+                        : "form__field"
+                    }
+                    defaultValue={dataSelect.correo}
+                    type="text"
+                    placeholder=""
+                    {...register("correo", {
+                      required: true,
+                    })}
+                  />
+                  <label className="form__label">correo</label>
+                  {errors.correo?.type === "required" && <p>Campo requerido</p>}
+                </InputText>
+              </article>
+            ) : (
+              <span className="form__field disabled">{dataSelect.correo}</span>
+            )}
+
+            {accion != "Editar" ? (
+              <article>
+                <InputText icono={<v.icononombre />}>
+                  <input
+                    className="form__field"
+                    defaultValue={dataSelect.pass}
+                    type="text"
+                    placeholder=""
+                    {...register("pass", {
+                      required: true,
+                      minLength: 6,
+                    })}
+                  />
+                  <label className="form__label">pass</label>
+                  {errors.pass?.type === "required" && <p>Campo requerido</p>}
+                  {errors.pass?.type === "minLength" && (
+                    <p>Debe tener al menos 6 caracteres</p>
+                  )}
+                </InputText>
+              </article>
+            ) : null}
+
             <article>
               <InputText icono={<v.icononombre />}>
                 <input
@@ -152,30 +162,30 @@ export function RegistrarUsuarios({ onClose, dataSelect, accion }) {
                   })}
                 />
                 <label className="form__label">Nombres</label>
+
                 {errors.nombres?.type === "required" && <p>Campo requerido</p>}
               </InputText>
             </article>
             <ContainerSelector>
-              <label>Tipo doc:</label>
+              <label>Tipo doc: </label>
               <Selector
-                color={"fc6027"}
-                texto1={"🧑‍💻"}
+                color="#fc6027"
+                texto1="🎴"
                 texto2={tipodoc.descripcion}
                 funcion={() => setStateTipodoc(!stateTipodoc)}
               />
               {stateTipodoc && (
                 <ListaGenerica
                   data={TipoDocData}
-                  bottom={"-260px"}
-                  scroll={"scroll"}
+                  bottom="-260px"
+                  scroll="scroll"
                   setState={() => setStateTipodoc(!stateTipodoc)}
                   funcion={(p) => setTipodoc(p)}
                 />
               )}
             </ContainerSelector>
-
             <article>
-              <InputText icono={<v.icononombre />}>
+              <InputText icono={<v.iconostock />}>
                 <input
                   className="form__field"
                   defaultValue={dataSelect.nro_doc}
@@ -186,12 +196,14 @@ export function RegistrarUsuarios({ onClose, dataSelect, accion }) {
                   })}
                 />
                 <label className="form__label">Nro. doc</label>
+
                 {errors.nrodoc?.type === "required" && <p>Campo requerido</p>}
               </InputText>
             </article>
             <article>
-              <InputText icono={<v.icononombre />}>
+              <InputText icono={<v.iconostockminimo />}>
                 <input
+                  step="0.01"
                   className="form__field"
                   defaultValue={dataSelect.telefono}
                   type="text"
@@ -200,12 +212,13 @@ export function RegistrarUsuarios({ onClose, dataSelect, accion }) {
                     required: true,
                   })}
                 />
-                <label className="form__label">Telefono:</label>
+                <label className="form__label">Telefono</label>
+
                 {errors.telefono?.type === "required" && <p>Campo requerido</p>}
               </InputText>
             </article>
             <article>
-              <InputText icono={<v.icononombre />}>
+              <InputText icono={<v.iconocodigobarras />}>
                 <input
                   className="form__field"
                   defaultValue={dataSelect.direccion}
@@ -215,7 +228,8 @@ export function RegistrarUsuarios({ onClose, dataSelect, accion }) {
                     required: true,
                   })}
                 />
-                <label className="form__label">Dirección:</label>
+                <label className="form__label">Direccion</label>
+
                 {errors.direccion?.type === "required" && (
                   <p>Campo requerido</p>
                 )}
@@ -224,24 +238,24 @@ export function RegistrarUsuarios({ onClose, dataSelect, accion }) {
           </section>
           <section className="seccion2">
             <ContainerSelector>
-              <label htmlFor="">Tipo:</label>
+              <label>Tipo: </label>
               <Selector
-                color={"#fc6027"}
-                texto1={"👷"}
+                color="#fc6027"
+                texto1="👷‍♂️"
                 texto2={tipouser.descripcion}
                 funcion={() => setStateTipouser(!stateTipouser)}
               />
               {stateTipouser && (
                 <ListaGenerica
                   data={TipouserData}
-                  bottom={"-150px"}
-                  scroll={"scroll"}
-                  setState={() => setStateTipouser(!stateTipouser)}
                   funcion={(p) => setTipouser(p)}
+                  bottom="-150px"
+                  scroll="scroll"
+                  setState={() => setStateTipouser(!stateTipouser)}
                 />
               )}
             </ContainerSelector>
-            PERMISOS:
+            PERMISOS:🔑
             <ListaModulos
               accion={accion}
               checkboxs={checkboxs}

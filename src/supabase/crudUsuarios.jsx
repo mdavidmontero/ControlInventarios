@@ -12,12 +12,11 @@ export const InsertarUsuarios = async (p) => {
     Swal.fire({
       icon: "error",
       title: "Oops...",
-      text: "Error al insertar usuario" + error.message,
+      text: "Error al insertar usuario " + error.message,
     });
-    if (data) return data;
   }
+  if (data) return data;
 };
-
 export const MostrarUsuarios = async () => {
   const idAuthSupabase = await obtenerIdAuthSupabase();
   const { error, data } = await supabase
@@ -25,18 +24,17 @@ export const MostrarUsuarios = async () => {
     .select()
     .eq("idauth", idAuthSupabase)
     .maybeSingle();
+
   if (data) {
     return data;
   }
 };
-
 export const MostrarUsuariosTodos = async (p) => {
   const { error, data } = await supabase.rpc("mostrarpersonal", p);
   if (data) {
     return data;
   }
 };
-
 export async function EliminarUsuarios(p) {
   const { error } = await supabase.from("usuarios").delete().eq("id", p.id);
   if (error) {
@@ -50,37 +48,33 @@ export async function EditarUsuarios(p) {
   }
 }
 export async function BuscarUsuarios(p) {
-  const { data } = await supabase
-    .from("usuarios")
-    .select()
-    .eq("id_empresa", p.id_empresa)
-    .ilike("descripcion", "%" + p.descripcion + "%");
+  const { data } = await supabase.rpc("buscarpersonal", p);
   return data;
 }
-// Tabla asignaciones
+//tabla asignaciones
 export const InsertarAsignaciones = async (p) => {
   const { error } = await supabase.from("asignarempresa").insert(p);
   if (error) {
     Swal.fire({
       icon: "error",
       title: "Oops...",
-      text: "Error al insertar asignaciones" + error.message,
+      text: "Error al insertar usuario " + error.message,
     });
   }
 };
-
-// Tabla permisos
-export const InsertarPermisos = async (p) => {
+//tabla permisos
+export async function InsertarPermisos(p) {
   const { error } = await supabase.from("permisos").insert(p);
+
   if (error) {
     Swal.fire({
       icon: "error",
       title: "Oops...",
-      text: "Error al insertar permisos" + error.message,
+      text: "Error al insertar permisos " + error.message,
+      footer: '<a href="">error</a>',
     });
   }
-};
-
+}
 export async function MostrarPermisos(p) {
   const { data, error } = await supabase
     .from("permisos")
@@ -89,26 +83,13 @@ export async function MostrarPermisos(p) {
 
   return data;
 }
-
-export async function MostrarPermisosTodos(p) {
-  const { data } = await supabase
-    .from("permisos")
-    .select(`id, id_usuario, idmodulo, modulos(nombre)`)
-    .eq("id_usuario", p.id_usuario);
-  return data;
-}
-
 export async function EliminarPermisos(p) {
   const { error } = await supabase
     .from("permisos")
     .delete()
     .eq("id_usuario", p.id_usuario);
   if (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "Error al eliminar permisos" + error.message,
-    });
+    alert("Error al eliminar", error);
   }
 }
 

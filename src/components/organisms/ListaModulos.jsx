@@ -3,14 +3,22 @@ import { useUsuarioStore } from "../../store/UsuariosStore";
 import { useEffect, useState } from "react";
 
 export function ListaModulos({ checkboxs, setCheckboxs, accion }) {
-  const { datamodulos } = useUsuarioStore();
+  const { datamodulos, datapermisos } = useUsuarioStore();
   const [isChecked, setisChecked] = useState(true);
   useEffect(() => {
     if (accion === "Editar") {
       let allDocs = [];
       datamodulos.forEach((item) => {
-        const statePermiso = datamodulos.filter((doc) => doc.id == item.id);
+        const statePermiso = datapermisos?.some(
+          (objeto) => objeto.modulos.nombre
+        );
+        if (statePermiso) {
+          allDocs.push({ ...element, check: true });
+        } else {
+          allDocs.push({ ...element, check: false });
+        }
       });
+      setCheckboxs(allDocs);
     } else {
       setCheckboxs(datamodulos);
     }

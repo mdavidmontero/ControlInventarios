@@ -20,22 +20,22 @@ export const useUsuarioStore = create((set, get) => ({
       email: p.correo,
       password: p.pass,
     });
+
+    console.log("data del registro del user auth", data);
     if (error) return;
     const datauser = await InsertarUsuarios({
       idauth: data.user.id,
       fecharegistro: new Date(),
-      tipouser: "admin",
+      tipouser: "superadmin",
     });
     return datauser;
   },
   idusuario: 0,
   mostrarUsuarios: async () => {
     const response = await MostrarUsuarios();
-
     set({ idusuario: response.id });
     return response;
   },
-
   buscador: "",
   setBuscador: (p) => {
     set({ buscador: p });
@@ -58,10 +58,12 @@ export const useUsuarioStore = create((set, get) => ({
       email: parametrosAuth.correo,
       password: parametrosAuth.pass,
     });
-    if (error) return null;
+    if (error) {
+      return null;
+    }
     const dataUserNew = await InsertarUsuarios({
       nombres: p.nombres,
-      nro_doc: p.nro_doc,
+      nro_doc: p.nrodoc,
       telefono: p.telefono,
       direccion: p.direccion,
       fecharegistro: new Date(),
@@ -69,8 +71,8 @@ export const useUsuarioStore = create((set, get) => ({
       idauth: data.user.id,
       tipouser: p.tipouser,
       tipodoc: p.tipodoc,
+      correo: p.correo,
     });
-
     await InsertarAsignaciones({
       id_empresa: p.id_empresa,
       id_usuario: dataUserNew.id,
@@ -86,7 +88,6 @@ export const useUsuarioStore = create((set, get) => ({
       }
     });
     await supabase.auth.signOut();
-    return data.user;
   },
   eliminarusuarios: async (p) => {
     await EliminarUsuarios(p);
@@ -94,15 +95,26 @@ export const useUsuarioStore = create((set, get) => ({
     const { parametros } = get();
     set(mostrarusuarios(parametros));
   },
-  editarusuarios: async (p) => {
+  editarusuarios: async (p, datacheckpermisos, idempresa) => {
     await EditarUsuarios(p);
-    const { mostrarusuarios } = get();
-    const { parametros } = get();
-    set(mostrarusuarios(parametros));
+    await EliminarPermisos({ id_usuario: p.id });
+    datacheckpermisos.forEach(async (item) => {
+      if (item.check) {
+        let parametrospermisos = {
+          id_usuario: p.id,
+          idmodulo: item.id,
+        };
+        await InsertarPermisos(parametrospermisos);
+      }
+    });
+
+    const { mostrarusuariosTodos } = get();
+    set(mostrarusuariosTodos({ _id_empresa: idempresa }));
   },
   buscarusuarios: async (p) => {
     const response = await BuscarUsuarios(p);
     set({ datausuarios: response });
+    return response;
   },
   mostrarModulos: async () => {
     const response = await MostrarModulos();
@@ -110,9 +122,29 @@ export const useUsuarioStore = create((set, get) => ({
     return response;
   },
   datapermisos: [],
+  datapermisosEdit: [],
   mostrarpermisos: async (p) => {
     const response = await MostrarPermisos(p);
     set({ datapermisos: response });
+    let allDocs = [];
+    DataModulosConfiguracion.map((element) => {
+      const statePermiso = response.some((objeto) =>
+        objeto.modulos.nombre.includes(element.title)
+      );
+      if (statePermiso) {
+        allDocs.push({ ...element, state: true });
+      } else {
+        allDocs.push({ ...element, state: false });
+      }
+    });
+    DataModulosConfiguracion.splice(0, DataModulosConfiguracion.length);
+    DataModulosConfiguracion.push(...allDocs);
+
+    return response;
+  },
+  mostrarpermisosEdit: async (p) => {
+    const response = await MostrarPermisos(p);
+    set({ datapermisosEdit: response });
     return response;
   },
 }));
