@@ -15,6 +15,7 @@ import { useProductosStore } from "../../../store/ProductosStore";
 import { v } from "../../../styles/variables";
 import { FaArrowsAltV } from "react-icons/fa";
 import { useState } from "react";
+import { Device } from "../../../styles/breackpoints";
 export function TablaProductos({
   data,
   SetopenRegistro,
@@ -23,29 +24,9 @@ export function TablaProductos({
 }) {
   const [pagina, setPagina] = useState(1);
   const { eliminarproductos } = useProductosStore();
+  const [columnFilters, setColumnFilters] = useState([]);
 
-  const editar = (data) => {
-    if (data.descripcion === "Generica") {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Esta registro no se permite modificar ya que es valor por defecto.",
-      });
-      return;
-    }
-    SetopenRegistro(true);
-    setdataSelect(data);
-    setAccion("Editar");
-  };
-  const eliminar = (p) => {
-    if (p.descripcion === "Generica") {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Este registro no se permite eliminar ya que es valor por defecto.",
-      });
-      return;
-    }
+  function eliminar(p) {
     Swal.fire({
       title: "¿Estás seguro(a)(e)?",
       text: "Una vez eliminado, ¡no podrá recuperar este registro!",
@@ -56,145 +37,220 @@ export function TablaProductos({
       confirmButtonText: "Si, eliminar",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await eliminarproductos({ id: p.id });
+        console.log(p);
+        await eliminarCategoria({ id: p });
       }
     });
-  };
+  }
+  function editar(data) {
+    SetopenRegistro(true);
+    setdataSelect(data);
+    setAccion("Editar");
+  }
   const columns = [
     {
       accessorKey: "descripcion",
       header: "Descripcion",
-      cell: (info) => (
-        <td data-title="Descripcion" className="ContentCell">
-          <span>{info.getValue()}</span>
-        </td>
-      ),
+      cell: (info) => <span>{info.getValue()}</span>,
+      enableColumnFilter: true,
+      filterFn: (row, columnId, filterStatuses) => {
+        if (filterStatuses.length === 0) return true;
+        const status = row.getValue(columnId);
+        return filterStatuses.includes(status?.id);
+      },
     },
+
     {
-      accessorKey: "stock",
-      header: "Stock",
+      accessorKey: "stock_minimo",
+      header: "Stock min",
       enableSorting: false,
       cell: (info) => (
         <td data-title="Stock" className="ContentCell">
           <span>{info.getValue()}</span>
         </td>
       ),
-    },
-    {
-      accessorKey: "precioventa",
-      header: "P.venta",
-      enableSorting: false,
-      cell: (info) => (
-        <td data-title="P.venta" className="ContentCell">
-          <span>{info.getValue()}</span>
-        </td>
-      ),
-    },
-    {
-      accessorKey: "preciocompra",
-      header: "P.compra",
-      enableSorting: false,
-      cell: (info) => (
-        <td data-title="P.compra" className="ContentCell">
-          <span>{info.getValue()}</span>
-        </td>
-      ),
+      enableColumnFilter: true,
+      filterFn: (row, columnId, filterStatuses) => {
+        if (filterStatuses.length === 0) return true;
+        const status = row.getValue(columnId);
+        return filterStatuses.includes(status?.id);
+      },
     },
     {
       accessorKey: "categoria",
       header: "Categoria",
       enableSorting: false,
-      cell: (info) => (
-        <td data-title="Categoria" className="ContentCell">
-          <ColorcontentTable
-            $color={info.row.original.color}
-            className="contentCategoria"
-          >
-            {info.getValue()}
-          </ColorcontentTable>
-        </td>
-      ),
+      cell: (info) => {
+        console.log(info.row.original.color);
+        return (
+          <td data-title="Categoria" className="ContentCell">
+            <Colorcontent
+              color={info.row.original.color}
+              className="contentCategoria"
+            >
+              {info.getValue()}
+            </Colorcontent>
+          </td>
+        );
+      },
+
+      enableColumnFilter: true,
+      filterFn: (row, columnId, filterStatuses) => {
+        if (filterStatuses.length === 0) return true;
+        const status = row.getValue(columnId);
+        return filterStatuses.includes(status?.id);
+      },
     },
     {
-      accessorKey: "marca",
-      header: "Marca",
+      accessorKey: "codigobarras",
+      header: "Cod.barras",
       enableSorting: false,
       cell: (info) => (
-        <td data-title="Marca" className="ContentCell">
+        <td data-title="Cod. barras" className="ContentCell">
           <span>{info.getValue()}</span>
         </td>
       ),
+      enableColumnFilter: true,
+      filterFn: (row, columnId, filterStatuses) => {
+        if (filterStatuses.length === 0) return true;
+        const status = row.getValue(columnId);
+        return filterStatuses.includes(status?.id);
+      },
+    },
+    {
+      accessorKey: "precioventa",
+      header: "Pr. venta",
+      enableSorting: false,
+      cell: (info) => (
+        <td data-title="Precio venta" className="ContentCell">
+          <span>{info.getValue()}</span>
+        </td>
+      ),
+      enableColumnFilter: true,
+      filterFn: (row, columnId, filterStatuses) => {
+        if (filterStatuses.length === 0) return true;
+        const status = row.getValue(columnId);
+        return filterStatuses.includes(status?.id);
+      },
+    },
+    {
+      accessorKey: "preciocompra",
+      header: "Pr. de compra",
+      enableSorting: false,
+      cell: (info) => (
+        <td data-title="Precio compra" className="ContentCell">
+          <span>{info.getValue()}</span>
+        </td>
+      ),
+      enableColumnFilter: true,
+      filterFn: (row, columnId, filterStatuses) => {
+        if (filterStatuses.length === 0) return true;
+        const status = row.getValue(columnId);
+        return filterStatuses.includes(status?.id);
+      },
     },
     {
       accessorKey: "acciones",
       header: "",
       enableSorting: false,
       cell: (info) => (
-        <td className="ContentCell">
+        <td data-title="Acciones" className="ContentCell">
           <ContentAccionesTabla
             funcionEditar={() => editar(info.row.original)}
-            funcionEliminar={() => eliminar(info.row.original)}
+            funcionEliminar={() => eliminar(info.row.original.id)}
           />
         </td>
       ),
+      enableColumnFilter: true,
+      filterFn: (row, columnId, filterStatuses) => {
+        if (filterStatuses.length === 0) return true;
+        const status = row.getValue(columnId);
+        return filterStatuses.includes(status?.id);
+      },
     },
   ];
   const table = useReactTable({
     data,
     columns,
+    state: {
+      columnFilters,
+    },
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    columnResizeMode: "onChange",
+    meta: {
+      updateData: (rowIndex, columnId, value) =>
+        setData((prev) =>
+          prev.map((row, index) =>
+            index === rowIndex
+              ? {
+                  ...prev[rowIndex],
+                  [columnId]: value,
+                }
+              : row
+          )
+        ),
+    },
   });
   return (
-    <Container>
-      <table className="responsive-table">
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th key={header.id}>
-                  {header.column.columnDef.header}
-                  {header.column.getCanSort() && (
-                    <span
-                      style={{ cursor: "pointer" }}
-                      onClick={header.column.getToggleSortingHandler()}
-                    >
-                      <FaArrowsAltV />
-                    </span>
-                  )}
-                  {
+    <>
+      <Container>
+        <table className="responsive-table">
+          <thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th key={header.id}>
+                    {header.column.columnDef.header}
+                    {header.column.getCanSort() && (
+                      <span
+                        style={{ cursor: "pointer" }}
+                        onClick={header.column.getToggleSortingHandler()}
+                      >
+                        <FaArrowsAltV />
+                      </span>
+                    )}
                     {
-                      asc: " 🔼",
-                      desc: " 🔽",
-                    }[header.column.getIsSorted()]
-                  }
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map((item) => (
-            <tr key={item.id}>
-              {item.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <Paginacion
-        table={table}
-        irinicio={() => table.setPageIndex(0)}
-        pagina={table.getState().pagination.pageIndex + 1}
-        setPagina={setPagina}
-        maximo={table.getPageCount()}
-      />
-    </Container>
+                      {
+                        asc: " 🔼",
+                        desc: " 🔽",
+                      }[header.column.getIsSorted()]
+                    }
+                    <div
+                      onMouseDown={header.getResizeHandler()}
+                      onTouchStart={header.getResizeHandler()}
+                      className={`resizer ${
+                        header.column.getIsResizing() ? "isResizing" : ""
+                      }`}
+                    />
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.map((item) => (
+              <tr key={item.id}>
+                {item.getVisibleCells().map((cell) => (
+                  <td key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <Paginacion
+          table={table}
+          irinicio={() => table.setPageIndex(0)}
+          pagina={table.getState().pagination.pageIndex + 1}
+          setPagina={setPagina}
+          maximo={table.getPageCount()}
+        />
+      </Container>
+    </>
   );
 }
 const Container = styled.div`
@@ -336,5 +392,16 @@ const Container = styled.div`
         }
       }
     }
+  }
+`;
+const Colorcontent = styled.div`
+  color: ${(props) => props.color};
+  border-radius: 8px;
+  border: 1px dashed ${(props) => props.color};
+  text-align: center;
+  padding: 3px;
+  width: 70%;
+  @media ${Device.tablet} {
+    width: 100%;
   }
 `;

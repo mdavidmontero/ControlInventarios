@@ -7,6 +7,7 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import styled from "styled-components";
+import { Device } from "../../../styles/breackpoints";
 
 import { ContentAccionesTabla } from "../ContentAccionesTabla";
 import { Paginacion } from "./Paginacion";
@@ -15,6 +16,7 @@ import { v } from "../../../styles/variables";
 import Swal from "sweetalert2";
 import { FaArrowsAltV } from "react-icons/fa";
 import { useState } from "react";
+import { useKardexStore } from "../../../store/KardexStore";
 export function TablaKardex({
   data,
   SetopenRegistro,
@@ -22,7 +24,7 @@ export function TablaKardex({
   setAccion,
 }) {
   const [pagina, setPagina] = useState(1);
-  const { eliminarMarca } = useMarcaStore();
+  const { eliminarkardex } = useKardexStore();
 
   const editar = (data) => {
     if (data.descripcion === "Generica") {
@@ -38,11 +40,11 @@ export function TablaKardex({
     setAccion("Editar");
   };
   const eliminar = (p) => {
-    if (p.descripcion === "Generica") {
+    if (p.estado === 0) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Este registro no se permite eliminar ya que es valor por defecto.",
+        text: "Este registro ya fue eliminado",
       });
       return;
     }
@@ -56,16 +58,85 @@ export function TablaKardex({
       confirmButtonText: "Si, eliminar",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await eliminarMarca({ id: p.id });
+        await eliminarkardex({ id: p.id });
       }
     });
   };
   const columns = [
     {
       accessorKey: "descripcion",
-      header: "Descripcion",
+      header: "Producto",
       cell: (info) => (
-        <td data-title="Descripcion" className="ContentCell">
+        <td data-title="Producto" className="ContentCell">
+          <span
+            style={{
+              textDecoration:
+                info.row.original.estado === 0 ? "line-through" : "none",
+            }}
+          >
+            {info.getValue()}
+          </span>
+        </td>
+      ),
+    },
+    {
+      accessorKey: "fecha",
+      header: "Fecha",
+      cell: (info) => (
+        <td data-title="Fecha" className="ContentCell">
+          <span>{info.getValue()}</span>
+        </td>
+      ),
+    },
+    {
+      accessorKey: "tipo",
+      header: "Tipo",
+      cell: (info) => (
+        <td data-title="Tipi" className="ContentCell">
+          {info.getValue() == "salida" ? (
+            <Colorcontent color="#ed4d4d" className="contentCategoria">
+              {info.getValue()}
+            </Colorcontent>
+          ) : (
+            <Colorcontent color="#30c85b" className="contentCategoria">
+              {info.getValue()}
+            </Colorcontent>
+          )}
+        </td>
+      ),
+    },
+    {
+      accessorKey: "detalle",
+      header: "Detalle",
+      cell: (info) => (
+        <td data-title="Detalle" className="ContentCell">
+          <span>{info.getValue()}</span>
+        </td>
+      ),
+    },
+    {
+      accessorKey: "nombres",
+      header: "Usuario",
+      cell: (info) => (
+        <td data-title="Usuario" className="ContentCell">
+          <span>{info.getValue()}</span>
+        </td>
+      ),
+    },
+    {
+      accessorKey: "cantidad",
+      header: "Cantidad",
+      cell: (info) => (
+        <td data-title="Cantidad" className="ContentCell">
+          <span>{info.getValue()}</span>
+        </td>
+      ),
+    },
+    {
+      accessorKey: "stock",
+      header: "Stock",
+      cell: (info) => (
+        <td data-title="Stock" className="ContentCell">
           <span>{info.getValue()}</span>
         </td>
       ),
@@ -281,5 +352,18 @@ const Container = styled.div`
         }
       }
     }
+  }
+`;
+
+const Colorcontent = styled.div`
+  color: ${(props) => props.color};
+  border-radius: 8px;
+  border: 1px dashed ${(props) => props.color};
+  text-align: center;
+  padding: 3px;
+  width: 70%;
+  font-weight: 700;
+  @media ${Device.tablet} {
+    width: 100%;
   }
 `;

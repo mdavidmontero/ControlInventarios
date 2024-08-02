@@ -11,25 +11,32 @@ import { TablaMarca } from "../organisms/tablas/TablaMarca";
 import { RegistrarMarca } from "../organisms/forms/RegistrarMarca";
 import { Btnsave } from "../molecules/BtnSave";
 import { Tabs } from "../organisms/Tabs";
+import { RegistrarKardex } from "../organisms/forms/RegistrarKardex";
+import { useKardexStore } from "../../store/KardexStore";
 
 export function KardexTemplate({ data }) {
   const [state, setState] = useState(false);
   const [dataSelect, setdataSelect] = useState([]);
   const [accion, setAccion] = useState("");
   const [openRegistro, SetopenRegistro] = useState(false);
-  const nuevoRegistro = () => {
-    SetopenRegistro(!openRegistro);
-    setAccion("Nuevo");
-    setdataSelect([]);
+  const [tipo, setTipo] = useState("");
+  const nuevaEntrada = () => {
+    SetopenRegistro(true);
+    setTipo("entrada");
   };
-  const { setBuscador } = useMarcaStore();
+  const nuevaSalida = () => {
+    SetopenRegistro(true);
+    setTipo("salida");
+  };
+  const { setBuscador } = useKardexStore();
   return (
     <Container>
       {openRegistro && (
-        <RegistrarMarca
+        <RegistrarKardex
           dataSelect={dataSelect}
           accion={accion}
           onClose={() => SetopenRegistro(!openRegistro)}
+          tipo={tipo}
         />
       )}
 
@@ -41,8 +48,16 @@ export function KardexTemplate({ data }) {
       <section className="area1">
         <ContentFiltro>
           <Title>Kardex</Title>
-          <Btnsave bgcolor={"#52de65"} titulo={"+ Entrada"} />
-          <Btnsave bgcolor={"#fb6661"} titulo={"+ - Salidas"} />
+          <Btnsave
+            bgcolor={"#52de65"}
+            titulo={"+ Entrada"}
+            funcion={nuevaEntrada}
+          />
+          <Btnsave
+            bgcolor={"#fb6661"}
+            titulo={"+ - Salidas"}
+            funcion={nuevaSalida}
+          />
         </ContentFiltro>
       </section>
       <section className="area2">

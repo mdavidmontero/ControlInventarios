@@ -44,7 +44,15 @@ const Container = styled.div`
     width: 400px;
   }
   .contentItems {
-    overflow-y: ${(props) => props.scroll};
+    overflow-y: ${(props) => props.$scroll};
+    &::-webkit-scrollbar {
+      width: 6px;
+      border-radius: 10px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #484848;
+    }
+    border-radius: 10px;
   }
 `;
 const ItemContainer = styled.div`

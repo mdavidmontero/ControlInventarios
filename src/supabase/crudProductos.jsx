@@ -23,9 +23,13 @@ export async function EliminarProductos(p) {
   }
 }
 export async function EditarProductos(p) {
-  const { error } = await supabase.from("productos").update(p).eq("id", p.id);
-  if (error) {
-    alert("Error al editar Productos", error.message);
+  try {
+    const { error } = await supabase.from("productos").update(p).eq("id", p.id);
+    if (error) {
+      alert("Error al editar producto", error);
+    }
+  } catch (error) {
+    alert(error.error_description || error.message + " editar categorias");
   }
 }
 export async function BuscarProductos(p) {

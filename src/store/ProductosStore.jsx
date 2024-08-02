@@ -36,10 +36,11 @@ export const useProductosStore = create((set, get) => ({
     const { parametros } = get();
     set(mostrarproductos(parametros));
   },
-  editarproductos: async (p) => {
+  editarProductos: async (p) => {
     await EditarProductos(p);
     const { mostrarproductos } = get();
     const { parametros } = get();
+    console.log("parametros", parametros);
     set(mostrarproductos(parametros));
   },
   buscarproductos: async (p) => {
