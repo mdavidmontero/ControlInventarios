@@ -12,10 +12,11 @@ import { Configuracion } from "../pages/Configuracion";
 import { Marca } from "../pages/Marca";
 import { Categorias } from "../pages/Categorias";
 import { Productos } from "../pages/Productos";
+import { Usuarios } from "../pages/Usuarios";
 
 export const MyRoutes = () => {
   const { user } = UserAuth();
-  const { mostrarUsuarios, idusuario } = useUsuarioStore();
+  const { mostrarUsuarios, idusuario, mostrarpermisos } = useUsuarioStore();
   const { mostrarEmpresa } = useEmpresaStore();
 
   const {
@@ -30,6 +31,11 @@ export const MyRoutes = () => {
     queryKey: ["mostrar empresa"],
     queryFn: () => mostrarEmpresa({ idusaurio: idusuario }),
     enabled: !!datausuarios,
+  });
+  const { data: datapermisos } = useQuery({
+    queryKey: ["mostrar permisos", { id_usuario: idusuario }],
+    queryFn: () => mostrarpermisos({ id_usuario: idusuario }),
+    enabled: !!datausuarios && !!dataempresa,
   });
 
   if (isLoading) {
@@ -48,6 +54,7 @@ export const MyRoutes = () => {
       <Route path="/configurar/marca" element={<Marca />} />
       <Route path="/configurar/categorias" element={<Categorias />} />
       <Route path="/configurar/productos" element={<Productos />} />
+      <Route path="/configurar/personal" element={<Usuarios />} />
     </Routes>
   );
 };
