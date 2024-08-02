@@ -6,22 +6,27 @@ import { useQuery } from "@tanstack/react-query";
 import { UsuariosTemplate } from "../components/templates/UsuariosTemplate";
 import { useUsuarioStore } from "../store/UsuariosStore";
 export function Usuarios() {
-  const { mostrarModulos } = useUsuarioStore();
-  const { mostrarMarca, datamarca, buscarMarca, buscador } = useMarcaStore();
+  const {
+    mostrarusuariosTodos,
+    datausuarios,
+    mostrarModulos,
+    buscarusuarios,
+    buscador,
+  } = useUsuarioStore();
   const { dataempresa } = useEmpresaStore();
   const { isLoading, error } = useQuery({
-    queryKey: ["mostrar marca", { id_empresa: dataempresa?.id }],
-    queryFn: () => mostrarMarca({ id_empresa: dataempresa?.id }),
+    queryKey: ["mostrar usuarios", { _id_empresa: dataempresa?.id }],
+    queryFn: () => mostrarusuariosTodos({ _id_empresa: dataempresa?.id }),
     enabled: dataempresa?.id != null,
   });
 
   const { data: buscardata } = useQuery({
     queryKey: [
-      "buscar marca",
-      { id_empresa: dataempresa.id, descripcion: buscador },
+      "buscar usuarios",
+      { _id_empresa: dataempresa.id, buscador: buscador },
     ],
     queryFn: () =>
-      buscarMarca({ id_empresa: dataempresa.id, descripcion: buscador }),
+      buscarusuarios({ _id_empresa: dataempresa.id, buscador: buscador }),
     enabled: dataempresa.id != null,
   });
 
@@ -36,5 +41,5 @@ export function Usuarios() {
   if (error) {
     return <span>Error...</span>;
   }
-  return <UsuariosTemplate data={datamarca} />;
+  return <UsuariosTemplate data={datausuarios} />;
 }

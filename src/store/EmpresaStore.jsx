@@ -1,6 +1,8 @@
 import { create } from "zustand";
-import { ContarUsuariosXempresa } from "../supabase/crudEmpresa";
-import { MostrarEmpresa } from "../supabase/crudEmpresa";
+import {
+  ContarUsuariosXempresa,
+  MostrarEmpresa,
+} from "../supabase/crudEmpresa";
 
 export const useEmpresaStore = create((set, get) => ({
   contadorusuarios: 0,

@@ -3,14 +3,14 @@ import { useUsuarioStore } from "../../store/UsuariosStore";
 import { useEffect, useState } from "react";
 
 export function ListaModulos({ checkboxs, setCheckboxs, accion }) {
-  const { datamodulos, datapermisos } = useUsuarioStore();
+  const { datamodulos, datapermisos, datapermisosEdit } = useUsuarioStore();
   const [isChecked, setisChecked] = useState(true);
   useEffect(() => {
-    if (accion === "Editar") {
+    if (accion == "Editar") {
       let allDocs = [];
-      datamodulos.forEach((item) => {
-        const statePermiso = datapermisos?.some(
-          (objeto) => objeto.modulos.nombre
+      datamodulos.map((element) => {
+        const statePermiso = datapermisosEdit?.some((objeto) =>
+          objeto.modulos.nombre.includes(element.nombre)
         );
         if (statePermiso) {
           allDocs.push({ ...element, check: true });
@@ -22,8 +22,8 @@ export function ListaModulos({ checkboxs, setCheckboxs, accion }) {
     } else {
       setCheckboxs(datamodulos);
     }
-  }, []);
-  const handleCheckboxChange = (id) => {
+  }, [datapermisosEdit]);
+  const handlecheckbox = (id) => {
     setCheckboxs((prev) => {
       return prev?.map((item) => {
         if (item.id === id) {
@@ -38,7 +38,7 @@ export function ListaModulos({ checkboxs, setCheckboxs, accion }) {
   const seleccionar = (e) => {
     let check = e.target.checked;
     setisChecked(check);
-    console.log(isChecked);
+    console.log(check);
   };
   return (
     <Container>
@@ -47,7 +47,7 @@ export function ListaModulos({ checkboxs, setCheckboxs, accion }) {
           <div
             className="content"
             key={index}
-            onClick={() => handleCheckboxChange(item.id)}
+            onClick={() => handlecheckbox(item.id)}
           >
             <input
               checked={item.check}
@@ -55,7 +55,7 @@ export function ListaModulos({ checkboxs, setCheckboxs, accion }) {
               type="checkbox"
               onChange={(e) => seleccionar(e)}
             />
-            <label>{item.nombre}</label>
+            <span>{item.nombre}</span>
           </div>
         );
       })}

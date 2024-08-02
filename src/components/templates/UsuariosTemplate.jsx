@@ -10,6 +10,8 @@ import { Buscador } from "../organisms/Buscador";
 import { TablaMarca } from "../organisms/tablas/TablaMarca";
 import { RegistrarMarca } from "../organisms/forms/RegistrarMarca";
 import { RegistrarUsuarios } from "../organisms/forms/RegistrarUsuarios";
+import { TablaUsuarios } from "../organisms/tablas/TablaUsuarios";
+import { useUsuarioStore } from "../../store/UsuariosStore";
 
 export function UsuariosTemplate({ data }) {
   const [state, setState] = useState(false);
@@ -21,7 +23,7 @@ export function UsuariosTemplate({ data }) {
     setAccion("Nuevo");
     setdataSelect([]);
   };
-  const { setBuscador } = useMarcaStore();
+  const { setBuscador } = useUsuarioStore();
   return (
     <Container>
       {openRegistro && (
@@ -52,7 +54,7 @@ export function UsuariosTemplate({ data }) {
         <Buscador setBuscador={setBuscador} />
       </section>
       <section className="main">
-        <TablaMarca
+        <TablaUsuarios
           data={data}
           SetopenRegistro={SetopenRegistro}
           setdataSelect={setdataSelect}

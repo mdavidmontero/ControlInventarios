@@ -42,7 +42,7 @@ export const MyRoutes = () => {
     return <SpinnerLoader />;
   }
   if (error) {
-    return <ErrorMolecula />;
+    return <ErrorMolecula mensaje={error.message} />;
   }
   return (
     <Routes>

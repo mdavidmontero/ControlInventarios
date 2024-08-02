@@ -3,8 +3,14 @@ import { CategoriasTemplate } from "../components/templates/CategoriasTemplate";
 import { SpinnerLoader } from "../components/molecules/SpinnerLoader";
 import { useCategoriasStore } from "../store/CategoriasStore";
 import { useEmpresaStore } from "../store/EmpresaStore";
+import { useUsuarioStore } from "../store/UsuariosStore";
+import { BloqueoPagina } from "../components/molecules/BloqueoPagina";
 
 export function Categorias() {
+  const { datapermisos } = useUsuarioStore();
+  const statePermiso = datapermisos.some((objeto) =>
+    objeto.modulos.nombre.includes("Categoria de productos")
+  );
   const { mostrarcategorias, datacategorias, buscarcategorias, buscador } =
     useCategoriasStore();
   const { dataempresa } = useEmpresaStore();
@@ -22,9 +28,9 @@ export function Categorias() {
       buscarcategorias({ id_empresa: dataempresa.id, descripcion: buscador }),
     enabled: dataempresa.id != null,
   });
-  // if (statePermiso == false) {
-  //   return <BloqueoPagina />;
-  // }
+  if (statePermiso == false) {
+    return <BloqueoPagina />;
+  }
   if (isLoading) {
     return <SpinnerLoader />;
   }

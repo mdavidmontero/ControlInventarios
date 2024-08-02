@@ -14,6 +14,8 @@ export function ConfiguracionTemplate() {
               className={item.state ? "card" : "card false"}
               key={index}
             >
+              <Mensaje state={item.state} />
+
               <div class="card-content">
                 <div class="card-image">
                   <img src={item.icono} />

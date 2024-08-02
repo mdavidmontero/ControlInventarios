@@ -3,6 +3,7 @@ import { supabase } from "../supabase/supabase.config";
 import {
   BuscarUsuarios,
   EditarUsuarios,
+  EliminarPermisos,
   EliminarUsuarios,
   InsertarAsignaciones,
   InsertarPermisos,
@@ -12,6 +13,7 @@ import {
   MostrarUsuarios,
   MostrarUsuariosTodos,
 } from "../supabase/crudUsuarios";
+import { DataModulosConfiguracion } from "../utils/dataEstatica";
 
 export const useUsuarioStore = create((set, get) => ({
   datamodulos: [],

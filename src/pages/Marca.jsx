@@ -3,7 +3,14 @@ import { useMarcaStore } from "../store/MarcaStore";
 import { useEmpresaStore } from "../store/EmpresaStore";
 import { SpinnerLoader } from "../components/molecules/SpinnerLoader";
 import { useQuery } from "@tanstack/react-query";
+import { useUsuarioStore } from "../store/UsuariosStore";
+import { BloqueoPagina } from "../components/molecules/BloqueoPagina";
 export function Marca() {
+  const { datapermisos } = useUsuarioStore();
+  const statePermiso = datapermisos.some((objeto) =>
+    objeto.modulos.nombre.includes("Marca de productos")
+  );
+
   const { mostrarMarca, datamarca, buscarMarca, buscador } = useMarcaStore();
   const { dataempresa } = useEmpresaStore();
   const { isLoading, error } = useQuery({
@@ -21,9 +28,9 @@ export function Marca() {
       buscarMarca({ id_empresa: dataempresa.id, descripcion: buscador }),
     enabled: dataempresa.id != null,
   });
-  //   if (statePermiso == false) {
-  //     return <BloqueoPagina />;
-  //   }
+  if (statePermiso == false) {
+    return <BloqueoPagina />;
+  }
   if (isLoading) {
     return <SpinnerLoader />;
   }

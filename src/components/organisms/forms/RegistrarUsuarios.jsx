@@ -19,14 +19,20 @@ import { useEmpresaStore } from "../../../store/EmpresaStore";
 import { TipoDocData, TipouserData } from "../../../utils/dataEstatica";
 import { ListaModulos } from "../ListaModulos";
 import { useUsuarioStore } from "../../../store/UsuariosStore";
+import { useQuery } from "@tanstack/react-query";
 export function RegistrarUsuarios({ onClose, dataSelect, accion }) {
+  const { insertarusuarios, editarusuarios, mostrarpermisosEdit } =
+    useUsuarioStore();
+  const { isLoading } = useQuery({
+    queryKey: ["mostrar permisos Edit", { id_usuario: dataSelect.id }],
+    queryFn: () => mostrarpermisosEdit({ id_usuario: dataSelect.id }),
+  });
   const [checkboxs, setCheckboxs] = useState([]);
   const [tipodoc, setTipodoc] = useState({ icono: "", descripcion: "otros" });
   const [tipouser, setTipouser] = useState({
     icono: "",
     descripcion: "empleado",
   });
-  const { insertarusuarios, editarusuarios } = useUsuarioStore();
   const { dataempresa } = useEmpresaStore();
 
   const [stateTipodoc, setStateTipodoc] = useState(false);
@@ -85,6 +91,9 @@ export function RegistrarUsuarios({ onClose, dataSelect, accion }) {
       setTipouser({ icono: "", descripcion: dataSelect.tipouser });
     }
   }, []);
+  if (isLoading) {
+    return <span>cargando...</span>;
+  }
   return (
     <Container>
       <div className="sub-contenedor">
