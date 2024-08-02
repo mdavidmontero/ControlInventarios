@@ -16,6 +16,7 @@ import { v } from "../../../styles/variables";
 import { FaArrowsAltV } from "react-icons/fa";
 import { useState } from "react";
 import { Device } from "../../../styles/breackpoints";
+import { useCategoriasStore } from "../../../store/CategoriasStore";
 export function TablaProductos({
   data,
   SetopenRegistro,
@@ -25,6 +26,7 @@ export function TablaProductos({
   const [pagina, setPagina] = useState(1);
   const { eliminarproductos } = useProductosStore();
   const [columnFilters, setColumnFilters] = useState([]);
+  const { eliminarcategorias } = useCategoriasStore();
 
   function eliminar(p) {
     Swal.fire({
@@ -371,6 +373,10 @@ const Container = styled.div`
         @media (min-width: ${v.bpbart}) {
           justify-content: center;
           border-bottom: none;
+        }
+        .contentCategoria {
+          color: ${(props) => props.color};
+          background-color: ${(props) => props.color};
         }
       }
       td {

@@ -15,6 +15,7 @@ import { Productos } from "../pages/Productos";
 import { Usuarios } from "../pages/Usuarios";
 import { Kardex } from "../pages/Kardex";
 import { Reportes } from "../pages/Reportes";
+import { Empresa } from "../pages/Empresa";
 
 export const MyRoutes = () => {
   const { user } = UserAuth();
@@ -52,6 +53,7 @@ export const MyRoutes = () => {
       <Route element={<ProtectedRoute user={user} redirectTo="/login" />}>
         <Route path="/" element={<Home />} />
         <Route path="/configurar" element={<Configuracion />} />
+        <Route path="/configurar/empresa" element={<Empresa />} />
         <Route path="/configurar/marca" element={<Marca />} />
         <Route path="/configurar/categorias" element={<Categorias />} />
         <Route path="/configurar/productos" element={<Productos />} />

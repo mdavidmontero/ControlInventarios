@@ -8,8 +8,10 @@ import { TablaCategorias } from "../organisms/tablas/TablaCategorias";
 import { Title } from "../atoms/Title";
 import { useCategoriasStore } from "../../store/CategoriasStore";
 import { v } from "../../styles/variables";
+import vacio from "../../assets/vacio.json";
 
 import { useState } from "react";
+import { Lottieanimacion } from "../molecules/Lottieanimacion";
 export function CategoriasTemplate({ data }) {
   const [state, setState] = useState(false);
   const [dataSelect, setdataSelect] = useState([]);
@@ -51,6 +53,9 @@ export function CategoriasTemplate({ data }) {
         <Buscador setBuscador={setBuscador} />
       </section>
       <section className="main">
+        {data.length == 0 && (
+          <Lottieanimacion alto="300" ancho="300" animacion={vacio} />
+        )}
         <TablaCategorias
           data={data}
           SetopenRegistro={SetopenRegistro}

@@ -1,37 +1,20 @@
 import styled from "styled-components";
 import { Header } from "../organisms/Header";
-import { useMarcaStore } from "../../store/MarcaStore";
-import { useState } from "react";
+import { BannerEmpresa } from "../organisms/BannerEmpresa";
 import { Title } from "../atoms/Title";
-import { Btnfiltro } from "../molecules/Btnfiltro";
-import { v } from "../../styles/variables";
-import { Buscador } from "../organisms/Buscador";
-import { TablaMarca } from "../organisms/tablas/TablaMarca";
-import { RegistrarMarca } from "../organisms/forms/RegistrarMarca";
-import { Lottieanimacion } from "../molecules/Lottieanimacion";
-import vacio from "../../assets/vacio.json";
-
-export function MarcaTemplate({ data }) {
+import { useState } from "react";
+export function EmpresaTemplate() {
   const [state, setState] = useState(false);
-  const [dataSelect, setdataSelect] = useState([]);
-  const [accion, setAccion] = useState("");
   const [openRegistro, SetopenRegistro] = useState(false);
-  const nuevoRegistro = () => {
+  const [accion, setAccion] = useState("");
+  const [dataSelect, setdataSelect] = useState([]);
+  function nuevoRegistro() {
     SetopenRegistro(!openRegistro);
     setAccion("Nuevo");
     setdataSelect([]);
-  };
-  const { setBuscador } = useMarcaStore();
+  }
   return (
     <Container>
-      {openRegistro && (
-        <RegistrarMarca
-          dataSelect={dataSelect}
-          accion={accion}
-          onClose={() => SetopenRegistro(!openRegistro)}
-        />
-      )}
-
       <header className="header">
         <Header
           stateConfig={{ state: state, setState: () => setState(!state) }}
@@ -39,42 +22,33 @@ export function MarcaTemplate({ data }) {
       </header>
       <section className="area1">
         <ContentFiltro>
-          <Title>Marcas</Title>
-          <Btnfiltro
-            funcion={nuevoRegistro}
-            bgcolor="#f6f3f3"
-            textcolor="#353535"
-            icono={<v.agregar />}
-          />
+          <Title>Tu empresa</Title>
         </ContentFiltro>
       </section>
-      <section className="area2">
-        <Buscador setBuscador={setBuscador} />
-      </section>
+      <section className="area2"></section>
       <section className="main">
-        {data.length == 0 && (
-          <Lottieanimacion alto="300" ancho="300" animacion={vacio} />
-        )}
-        <TablaMarca
-          data={data}
-          SetopenRegistro={SetopenRegistro}
-          setdataSelect={setdataSelect}
-          setAccion={setAccion}
-        />
+        <BannerEmpresa />
+        {/* <Lottieanimacion
+            alto="300"
+            ancho="300"
+            animacion={vacio}
+          /> */}
       </section>
     </Container>
   );
 }
 const Container = styled.div`
+  position: relative;
   min-height: 100vh;
   padding: 15px;
   width: 100%;
+  overflow: hidden;
   background: ${({ theme }) => theme.bgtotal};
   color: ${({ theme }) => theme.text};
   display: grid;
   grid-template:
     "header" 100px
-    "area1" 100px
+    "area1" 0px
     "area2" 60px
     "main" auto;
 
@@ -85,6 +59,7 @@ const Container = styled.div`
     align-items: center;
   }
   .area1 {
+    margin-top: 15px;
     grid-area: area1;
     /* background-color: rgba(229, 67, 26, 0.14); */
     display: flex;

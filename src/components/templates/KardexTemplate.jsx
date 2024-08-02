@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { Header } from "../organisms/Header";
 import { useMarcaStore } from "../../store/MarcaStore";
 import { useState } from "react";
-import { ContentFiltro } from "../atoms/ContentFiltro";
 import { Title } from "../atoms/Title";
 import { Btnfiltro } from "../molecules/Btnfiltro";
 import { v } from "../../styles/variables";
@@ -55,7 +54,7 @@ export function KardexTemplate({ data }) {
           />
           <Btnsave
             bgcolor={"#fb6661"}
-            titulo={"+ - Salidas"}
+            titulo={"- Salidas"}
             funcion={nuevaSalida}
           />
         </ContentFiltro>
@@ -71,16 +70,17 @@ export function KardexTemplate({ data }) {
 }
 const Container = styled.div`
   min-height: 100vh;
+  padding: 15px;
   width: 100%;
-  background-color: ${(props) => props.theme.bgtotal};
+  background: ${({ theme }) => theme.bgtotal};
   color: ${({ theme }) => theme.text};
   display: grid;
-  padding: 15px;
   grid-template:
     "header" 100px
     "area1" 100px
-    "area2" 100px
+    "area2" 60px
     "main" auto;
+
   .header {
     grid-area: header;
     /* background-color: rgba(103, 93, 241, 0.14); */
@@ -100,8 +100,17 @@ const Container = styled.div`
     align-items: center;
     justify-content: end;
   }
+
   .main {
+    margin-top: 20px;
     grid-area: main;
     /* background-color: rgba(179, 46, 241, 0.14); */
   }
+`;
+const ContentFiltro = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
+  width: 100%;
+  gap: 15px;
 `;

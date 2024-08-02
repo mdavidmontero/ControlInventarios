@@ -12,6 +12,7 @@ import { RegistrarMarca } from "../organisms/forms/RegistrarMarca";
 import { RegistrarUsuarios } from "../organisms/forms/RegistrarUsuarios";
 import { TablaUsuarios } from "../organisms/tablas/TablaUsuarios";
 import { useUsuarioStore } from "../../store/UsuariosStore";
+import { Lottieanimacion } from "../molecules/Lottieanimacion";
 
 export function UsuariosTemplate({ data }) {
   const [state, setState] = useState(false);
@@ -54,6 +55,9 @@ export function UsuariosTemplate({ data }) {
         <Buscador setBuscador={setBuscador} />
       </section>
       <section className="main">
+        {data.length == 0 && (
+          <Lottieanimacion alto="300" ancho="300" animacion={vacio} />
+        )}
         <TablaUsuarios
           data={data}
           SetopenRegistro={SetopenRegistro}

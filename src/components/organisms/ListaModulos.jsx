@@ -51,7 +51,7 @@ export function ListaModulos({ checkboxs, setCheckboxs, accion }) {
           >
             <input
               checked={item.check}
-              class="checkbox"
+              className="checkbox"
               type="checkbox"
               onChange={(e) => seleccionar(e)}
             />
